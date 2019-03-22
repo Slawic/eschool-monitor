@@ -41,6 +41,11 @@ variable tier {
   description = "The machine tier or type. See this page for supported tiers and pricing: https://cloud.google.com/sql/pricing"
   default     = "db-f1-micro"
 }
+variable ip_configuration {
+  description = "The ip_configuration settings subblock"
+  type        = "list"
+  default     = [{ipv4_enabled = "false", private_network = "${google_compute_network.private_network.self_link}"}]
+}
 variable db_instance_name {
   description = "The name of the master instance"
   default     = "master-instance"
@@ -71,17 +76,17 @@ variable db_name {
 
 variable db_charset {
   description = "The charset for the default database"
-  default     = ""
+  default     = "utf8"
 }
 
 variable db_collation {
   description = "The collation for the default database. Example for MySQL databases: 'utf8_general_ci', and Postgres: 'en_US.UTF8'"
-  default     = ""
+  default     = "utf8"
 }
 
 variable user_name {
   description = "The name of the default user"
-  default     = "default"
+  default     = "root"
 }
 
 variable user_host {
