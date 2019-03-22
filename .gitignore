@@ -1,0 +1,7 @@
+### Terraform ###
+# General
+.terraform
+.ssh/
+*.json
+terraform.tfstate.backup
+terraform.tfstate
