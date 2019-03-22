@@ -2,9 +2,16 @@ resource "google_compute_network" "vpc_network" {
   name = "vpc-network"
   auto_create_subnetworks = false
 }
-resource "google_compute_subnetwork" "subnetwork" {
+resource "google_compute_subnetwork" "privet_subnetwork" {
   name          = "test-subnetwork"
-  ip_cidr_range = "${var.ip_cidr_range}"
+  ip_cidr_range = "${var.ip_cidr_range_privet}"
+  region        = "${var.region}"
+  network       = "${google_compute_network.vpc_network.self_link}"
+}
+
+resource "google_compute_subnetwork" "database_subnetwork" {
+  name          = "test-subnetwork"
+  ip_cidr_range = "${var.ip_cidr_range_db}"
   region        = "${var.region}"
   network       = "${google_compute_network.vpc_network.self_link}"
 }
