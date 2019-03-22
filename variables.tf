@@ -1,8 +1,8 @@
 variable "key" {
-  default = "DevOps-f87e91d062e3.json"
+  default = "devops-a162f31edb27.json"
 }
 variable "project" {
-  default = "eschool-095"
+  default = "devops-235312"
 }
 variable "region" {
   default = "us-central1"

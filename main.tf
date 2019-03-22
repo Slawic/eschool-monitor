@@ -16,8 +16,8 @@ resource "google_compute_instance" "web" {
     access_config = {
     }
   }
-   metadata {
-    sshKeys = "centos:${file("${var.public_key_path}")}"
-  }
+  # metadata {
+  #  sshKeys = "centos:${file("${var.public_key_path}")}"
+  #}
 }
 
