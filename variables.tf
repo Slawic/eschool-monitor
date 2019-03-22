@@ -22,7 +22,7 @@ variable "instance_name" {
 variable "count" {
     default = "1"
 }
-variable "ip_cidr_range_privet" {
+variable "ip_cidr_range_private" {
     default = "10.0.1.0/24"
 }
 variable "ip_cidr_range_db" {

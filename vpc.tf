@@ -1,12 +1,12 @@
-resource "google_compute_network" "vpc_privet" {
-  name = "vpc-privet"
+resource "google_compute_network" "vpc_private" {
+  name = "vpc-private"
   auto_create_subnetworks = false
 }
 resource "google_compute_subnetwork" "subnetwork" {
   name          = "subnetwork"
-  ip_cidr_range = "${var.ip_cidr_range_privet}"
+  ip_cidr_range = "${var.ip_cidr_range_private}"
   region        = "${var.region}"
-  network       = "${google_compute_network.vpc_privet.self_link}"
+  network       = "${google_compute_network.vpc_private.self_link}"
 }
 resource "google_compute_network" "vpc_db" {
   name = "vpc-db"
@@ -21,7 +21,7 @@ resource "google_compute_subnetwork" "database_subnetwork" {
 resource "google_compute_router" "router" {
   name    = "router"
   region  = "${google_compute_subnetwork.subnetwork.region}"
-  network = "${google_compute_network.vpc_privet.self_link}"
+  network = "${google_compute_network.vpc_private.self_link}"
   bgp {
     asn = 64514
   }
