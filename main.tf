@@ -13,24 +13,19 @@ resource "google_compute_instance" "web" {
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.private_subnetwork.name}"
-    #  access_config = {
-    #  }
+ 
   }
-  #   network_interface {
-  #   subnetwork = "${google_compute_subnetwork.database_subnetwork.name}"
-  #   #  access_config = {
-  #   #  }
-  # }
-
+ 
   metadata_startup_script = <<SCRIPT
 sudo yum -y update
 sudo yum -y install httpd
 
 SCRIPT
 
-  # metadata {
-  #  sshKeys = "centos:${file("${var.public_key_path}")}"
-  #}
+  metadata {
+    sshKeys = "centos:${file("f:/SSHkey/devops095.pub")}"
+  }
+
 }
 
 resource "google_compute_instance" "bastion" {
@@ -45,24 +40,48 @@ resource "google_compute_instance" "bastion" {
     }
   }
 
-  # network_interface {
-  #   subnetwork = "${google_compute_subnetwork.public_subnetwork.name}"
-  #    access_config = {
-  #    }
-  #}
-    network_interface {
+  network_interface {
     subnetwork = "${google_compute_subnetwork.private_subnetwork.name}"
-      access_config = {
+    access_config = {
       }
   }
+   metadata {
+    sshKeys = "centos:${file("f:/SSHkey/devops095.pub")}"
+   }
+  #  provisioner "file" {
+  #   source = "f:/SSHkey/devops095_ossh.pem"
+  #   destination = "/home/centos/.ssh/"
+  #   }
 
-#   metadata_startup_script = <<SCRIPT
-# sudo yum -y update
-# sudo yum -y install httpd
+   metadata_startup_script = <<SCRIPT
+sudo yum -y update
+sudo yum -y install epel-release
+sudo yum -y install ansible
+SCRIPT
+}
 
-# SCRIPT
+resource "null_resource" remoteExecProvisionerWFolder {
+  connection {
+    host = "${google_compute_instance.bastion.*.network_interface.0.access_config.0.nat_ip}"
+    type = "ssh"
+    user = "centos"
+    private_key = "${file("f:/SSHkey/devops095_ossh.pem")}"
+    agent = "false"
+  }  
+  provisioner "remote-exec" {
+    inline = [ "rm -rf /tmp/ansible" ]
+  }
+  provisioner "file" {
+    source = "ansible"
+    destination = "/tmp/ansible"
+  }
 
-  # metadata {
-  #  sshKeys = "centos:${file("${var.public_key_path}")}"
-  #}
+  provisioner "file" {
+    source = "f:/SSHkey/devops095_ossh.pem"
+    destination = "/home/centos/.ssh/id_rsa"
+   }
+
+  provisioner "remote-exec" {
+    inline = [ "sudo chmod 600 /home/centos/.ssh/id_rsa" ]
+  }
 }

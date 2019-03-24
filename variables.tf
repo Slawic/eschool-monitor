@@ -20,17 +20,17 @@ variable "instance_name" {
     default = "web"
 }
 variable "count" {
-    default = "1"
+    default = "2"
 }
-variable "ip_cidr_range_public" {
-    default = "10.0.11.0/24"
+//VPC vars
+variable "countnat" {
+    default = "2"
 }
+
 variable "ip_cidr_range_private" {
     default = "10.0.12.0/24"
 }
-variable "ip_cidr_range_db" {
-    default = "10.0.13.0/24"
-}
+
 variable "public_key_path" {
   description = "Path to file containing public key"
   default     = ".ssh/id_rsa.pub"

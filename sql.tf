@@ -1,26 +1,27 @@
-resource "google_compute_global_address" "private_ip_address" {
-    name          = "private-ip-address"
-    purpose       = "VPC_PEERING"
-    address_type = "INTERNAL"
-    prefix_length = 16
-    network       = "${google_compute_network.my_vpc_network.self_link}"
-}
-
-resource "google_service_networking_connection" "private_vpc_connection" {
-    network       = "${google_compute_network.my_vpc_network.self_link}"
-    service       = "servicenetworking.googleapis.com"
-    reserved_peering_ranges = ["${google_compute_global_address.private_ip_address.name}"]
+data "null_data_source" "auth_mysql_allowed_1" {
+  count  = "${var.countnat}"
+  inputs = {
+    name  = "nat-${count.index + 1}"
+    value = "${element(google_compute_address.address.*.address, count.index)}"
+    
+  }
 }
 
 resource "google_sql_database_instance" "instance" {
-    depends_on = ["google_service_networking_connection.private_vpc_connection"]
-    name = "${var.project}-db-instance"
-    region = "us-central1"
+    name               = "${var.project}-db-instance125"
+    region             = "${var.region}"
+    database_version   = "${var.database_version}"
+
     settings {
-        tier = "db-f1-micro"
+        tier             = "db-f1-micro"
+        disk_autoresize  = "${var.disk_autoresize}"
+        disk_size        = "${var.disk_size}"
+        disk_type        = "${var.disk_type}"
         ip_configuration {
-            ipv4_enabled = "false"
-            private_network = "${google_compute_network.my_vpc_network.self_link}"
+            ipv4_enabled = "true"
+            authorized_networks = [
+               "${data.null_data_source.auth_mysql_allowed_1.*.outputs}",
+            ]
         }
     }
 }
