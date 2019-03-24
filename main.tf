@@ -2,7 +2,7 @@ resource "google_compute_instance" "web" {
   count        = "${var.count}"
   name         = "${var.instance_name}-${count.index}"
   machine_type = "${var.machine_type}"
-  tags = ["http"]
+  tags = ["http2"]
   
 
   boot_disk {
@@ -31,6 +31,10 @@ resource "google_compute_forwarding_rule" "default" {
 resource "google_compute_target_pool" "default" {
   project          = "${var.project}"
   name             = "lbs3"
+   instances = [
+    "us-central1-a/web-0",
+    "us-central1-a/web-1",
+  ]
   region           = "${var.region}"
   session_affinity = "NONE"
 
