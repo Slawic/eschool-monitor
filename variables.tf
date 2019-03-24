@@ -1,8 +1,8 @@
 variable "key" {
-  default = "f:/SSHkey/gcp_devops.json"
+  default = "devops-a162f31edb27.json"
 }
 variable "project" {
-  default = "lyrical-chassis-232614"
+  default = "devops-235312"
 }
 variable "region" {
   default = "us-central1"
@@ -26,14 +26,18 @@ variable "count" {
 
 //VPC vars
 variable "countnat" {
-    default = "2"
+    default = "1"
 }
 variable "ip_cidr_range_private" {
     default = "10.0.12.0/24"
 }
 variable "public_key_path" {
   description = "Path to file containing public key"
-  default     = ".ssh/id_rsa.pub"
+  default     = ".ssh/devops095.pub"
+}
+variable "private_key_path" {
+  description = "Path to file containing private key"
+  default     = ".ssh/devops095_ossh.pem"
 }
 //Database variable
 variable database_version {
