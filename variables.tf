@@ -1,8 +1,8 @@
 variable "key" {
-  default = "devops-a162f31edb27.json"
+  default = "f:/SSHkey/gcp_devops.json"
 }
 variable "project" {
-  default = "devops-235312"
+  default = "lyrical-chassis-232614"
 }
 variable "region" {
   default = "us-central1"
@@ -20,13 +20,16 @@ variable "instance_name" {
     default = "web"
 }
 variable "count" {
-    default = "1"
+    default = "2"
+}
+
+
+//VPC vars
+variable "countnat" {
+    default = "2"
 }
 variable "ip_cidr_range_private" {
-    default = "10.0.1.0/24"
-}
-variable "ip_cidr_range_db" {
-    default = "10.0.100.0/24"
+    default = "10.0.12.0/24"
 }
 variable "public_key_path" {
   description = "Path to file containing public key"
@@ -35,15 +38,16 @@ variable "public_key_path" {
 //Database variable
 variable database_version {
   description = "The version of of the database. `MYSQL_5_6`"
-  default     = "MYSQL_5_6"
+  default     = "MYSQL_5_7"
 }
 variable tier {
   description = "The machine tier or type. See this page for supported tiers and pricing: https://cloud.google.com/sql/pricing"
   default     = "db-f1-micro"
 }
+
 variable db_instance_name {
   description = "The name of the master instance"
-  default     = "master-instance"
+  default     = "dbinstancesc03"
 }
 variable disk_autoresize {
   description = "Second Generation only. Configuration to increase storage size automatically."
@@ -66,22 +70,22 @@ variable backup_configuration {
 }
 variable db_name {
   description = "Name of the default database to create"
-  default     = "eschool_db"
+  default     = "eschooldb"
 }
 
 variable db_charset {
   description = "The charset for the default database"
-  default     = ""
+  default     = "utf8"
 }
 
 variable db_collation {
   description = "The collation for the default database. Example for MySQL databases: 'utf8_general_ci', and Postgres: 'en_US.UTF8'"
-  default     = ""
+  default     = "utf8_general_ci"
 }
 
 variable user_name {
   description = "The name of the default user"
-  default     = "default"
+  default     = "root"
 }
 
 variable user_host {
@@ -91,5 +95,5 @@ variable user_host {
 
 variable user_password {
   description = "The password for the default user. If not set, a random one will be generated and available in the generated_user_password output variable."
-  default     = ""
+  default     = "devops095eSchool"
 }

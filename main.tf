@@ -2,7 +2,8 @@ resource "google_compute_instance" "web" {
   count        = "${var.count}"
   name         = "${var.instance_name}-${count.index}"
   machine_type = "${var.machine_type}"
-  tags = ["http2"]
+  tags = ["ssh","web"]
+
   
 
   boot_disk {
@@ -12,13 +13,52 @@ resource "google_compute_instance" "web" {
   }
 
   network_interface {
-    subnetwork = "${google_compute_subnetwork.subnetwork.name}"
-    access_config = {
+    subnetwork = "${google_compute_subnetwork.private_subnetwork.name}"
+ 
+  }
+ 
+  metadata_startup_script = <<SCRIPT
+sudo yum -y update
+sudo yum -y install httpd
+
+SCRIPT
+
+  metadata {
+    sshKeys = "centos:${file("f:/SSHkey/devops095.pub")}"
+  }
+
+}
+
+resource "google_compute_instance" "bastion" {
+  name         = "bastion"
+  machine_type = "${var.machine_type}"
+  tags = ["ssh"]
+  
+
+  boot_disk {
+    initialize_params {
+      image = "${var.image}"
     }
   }
-  # metadata {
-  #  sshKeys = "centos:${file("${var.public_key_path}")}"
-  #}
+
+  network_interface {
+    subnetwork = "${google_compute_subnetwork.private_subnetwork.name}"
+    access_config = {
+      }
+  }
+   metadata {
+    sshKeys = "centos:${file("f:/SSHkey/devops095.pub")}"
+   }
+  #  provisioner "file" {
+  #   source = "f:/SSHkey/devops095_ossh.pem"
+  #   destination = "/home/centos/.ssh/"
+  #   }
+
+   metadata_startup_script = <<SCRIPT
+sudo yum -y update
+sudo yum -y install epel-release
+sudo yum -y install ansible
+SCRIPT
 }
 resource "google_compute_forwarding_rule" "default" {
   project               = "${var.project}"
@@ -28,24 +68,29 @@ resource "google_compute_forwarding_rule" "default" {
   port_range            = "80"
 }
 
-resource "google_compute_target_pool" "default" {
-  project          = "${var.project}"
-  name             = "lbs3"
-   instances = [
-    "us-central1-a/web-0",
-    "us-central1-a/web-1",
-  ]
-  region           = "${var.region}"
-  session_affinity = "NONE"
+resource "null_resource" remoteExecProvisionerWFolder {
+  connection {
+    host = "${google_compute_instance.bastion.*.network_interface.0.access_config.0.nat_ip}"
+    type = "ssh"
+    user = "centos"
+    private_key = "${file("f:/SSHkey/devops095_ossh.pem")}"
+    agent = "false"
+  }  
+  provisioner "remote-exec" {
+    inline = [ "rm -rf /tmp/ansible" ]
+  }
+  provisioner "file" {
+    source = "ansible"
+    destination = "/tmp/ansible"
+  }
 
-  health_checks = [
-    "${google_compute_http_health_check.default.name}",
-  ]
-}
+  provisioner "file" {
+    source = "f:/SSHkey/devops095_ossh.pem"
+    destination = "/home/centos/.ssh/id_rsa"
+   }
 
-resource "google_compute_http_health_check" "default" {
-  project      = "${var.project}"
-  name         = "hg-hc"
-  request_path = "/"
-  port         = "80"
+  provisioner "remote-exec" {
+    inline = [ "sudo chmod 600 /home/centos/.ssh/id_rsa" ]
+  }
+
 }
