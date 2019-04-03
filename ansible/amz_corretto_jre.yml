@@ -1,0 +1,11 @@
+---
+- name: Upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+    
+- name: Install corretto
+  yum:
+    name: "{{ amazon_corretto_jre_url }}"
+    state: present
+...
