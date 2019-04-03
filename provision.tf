@@ -27,6 +27,10 @@ resource "null_resource" remoteExecProvisionerWFolder {
     content = "${data.template_file.jenkins_conf.rendered}"
     destination = "/tmp/ansible/files/jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml"
   }
+   provisioner "file" {
+    content = "${data.template_file.app_conf.rendered}"
+    destination = "/tmp/ansible/files/application.properties"
+  }
 
 }
 

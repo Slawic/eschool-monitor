@@ -10,5 +10,5 @@
   become: true
   vars_files: /tmp/ansible/vars.yml
   tasks:
-    - import_tasks: /tmp/ansible/amz_corretto_jre.yml
+    - import_tasks: /tmp/ansible/web.yml
 ...

@@ -30,7 +30,7 @@ SCRIPT
 
 resource "google_compute_instance" "jenkins" {
   name         = "jenkins"
-  machine_type = "${var.machine_type}"
+  machine_type = "n1-standard-1"
   tags = ["ssh"]
   
 

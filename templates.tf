@@ -6,3 +6,13 @@ data "template_file" "jenkins_conf" {
     web1_server = "${element(google_compute_instance.web.*.network_interface.0.network_ip, count.index + 1)}"
   }
 }
+data "template_file" "app_conf" {
+  template = "${file("${path.module}/templates/application.properties.tpl")}"
+  depends_on = ["google_sql_database_instance.instance"]
+  vars {
+    db_server = "${google_sql_database_instance.instance.ip_address.0.ip_address}"
+    db_name = "${var.db_name}"
+    db_user = "${var.user_name}"
+    db_pass = "${var.user_password}"
+  }
+}
