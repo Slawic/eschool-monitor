@@ -13,7 +13,7 @@ resource "null_resource" remoteExecProvisionerWFolder {
      destination = "/home/centos/.ssh/id_rsa"
      }
   provisioner "remote-exec" {
-  inline = [ "sudo chmod 600 /home/centos/.ssh/id_rsa" ]
+    inline = [ "sudo chmod 600 /home/centos/.ssh/id_rsa" ]
   }
   provisioner "remote-exec" {
     inline = [ "rm -rf /tmp/ansible" ]

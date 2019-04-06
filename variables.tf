@@ -1,8 +1,8 @@
 variable "key" {
-  default = "devops-eb6d149e8256.json"
+  default = "f:/SSHkey/gcp_devops.json"
 }
 variable "project" {
-  default = "devops-235618"
+  default = "lyrical-chassis-232614"
 }
 variable "region" {
   default = "us-central1"
@@ -51,7 +51,7 @@ variable tier {
 
 variable db_instance_name {
   description = "The name of the master instance"
-  default     = "dbinstancesc03"
+  default     = "dbinstancesc01"
 }
 variable disk_autoresize {
   description = "Second Generation only. Configuration to increase storage size automatically."
