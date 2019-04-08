@@ -106,3 +106,9 @@ variable "azs" {
   type = "list"
   default = ["us-central1-a", "us-central1-b"]
 }
+
+//metric variable seconds: values could be  60 or 120 or 300 
+variable "metric_value" {
+  description = "The timestamp app values for metric 1"
+  default     = "60s"
+}
